@@ -1,14 +1,26 @@
 'use client'
 import Input from "@/app/components/inputs/input";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import Button from "@/app/components/Button";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation"
 
 const AuthForm = () => {
-    const [variant, setVariant] = useState('LOGIN');
+    const session = useSession();
+    const router = useRouter();
+    const [variant, setVariant] = useState('REGISTER');
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(()=>{
+        if(session?.status === 'authenticated'){
+            router.push('/users')
+        }
+    },[session?.status])
 
     const toggleVaraint = () => {
         if (variant === 'LOGIN') {
@@ -18,7 +30,8 @@ const AuthForm = () => {
         }
     }
 
-    //useForm is hook to handle form
+    //useForm is hook to handle form from react-hook-form
+    //register is used to register input to useForm
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             name: '',
@@ -30,25 +43,43 @@ const AuthForm = () => {
     const onSubmit = async (data) => {
         setIsLoading(true);
         if (variant === 'REGISTER') {
-            //call register api
+            axios.post('/api/register', data) //submits data to api/register
+            .then(()=> signIn('credentials', data))
+            .then(() => toast.success('Registered successfully!'))
+            .catch(() => toast.error('Something went wrong!')) //create a toast for error
+            .finally(() => setIsLoading(false));
         }
 
         if (variant === 'LOGIN') {
-            //next auth signin
+            signIn('credentials', {
+                ...data, //sprad data to pass email and password
+                redirect: false,
+            })
+            .then((callback) =>{
+                if(callback.error){
+                    toast.error('Invalid Credentials');
+                }
+                if(callback.ok && !callback?.error){
+                    toast.success('Logged in successfully!');
+                }
+            })
+            .finally(() => setIsLoading(false))
         }
     }
 
     const socialAction = (action) => {
         setIsLoading(true);
-        if (action === 'google') {
-            //next auth signin with google
-        }
-
-        if (action === 'facebook') {
-            //next auth signin with facebook
-        }
+        signIn(action, { redirect: false })
+        .then((callback) => {
+            if(callback?.error){
+                toast.error('Something went wrong!');
+            }
+            if(callback?.ok && !callback?.error){
+                toast.success('Logged in successfully!');
+            }
+        })
+        .finally(() => setIsLoading(false))
     }
-
 
     return (
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

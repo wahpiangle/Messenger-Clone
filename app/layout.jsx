@@ -1,3 +1,5 @@
+import AuthContext from './context/AuthContext';
+import ToasterContext from './context/ToasterContext';
 import './globals.css';
 
 export const metadata = {
@@ -8,8 +10,11 @@ export const metadata = {
 const RootLayout = ({ children }) => {
     return (
         <html lang="en">
-            <body>
-                {children}
+            <body suppressHydrationWarning={true} >
+                <AuthContext>
+                    <ToasterContext />
+                    {children}
+                </AuthContext>
             </body>
         </html >
     )
