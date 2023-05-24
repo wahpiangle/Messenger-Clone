@@ -10,7 +10,7 @@ export const metadata = {
 const RootLayout = ({ children }) => {
     return (
         <html lang="en">
-            <body suppressHydrationWarning={true} >
+            <body>
                 <AuthContext>
                     <ToasterContext />
                     {children}
