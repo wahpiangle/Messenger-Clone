@@ -10,7 +10,7 @@ const UserBox = ({ data }) => {
     //function will only be called when data & router changes
     const handleClick = useCallback(()=>{
         setIsLoading(true);
-        axios.post('/api/conversations', {
+        axios.post('/api/conversation', {
             userId: data.id
         })
         .then((data) => {
