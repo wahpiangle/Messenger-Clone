@@ -30,7 +30,7 @@ const UserBox = ({ data }) => {
             </div>
         </div>
     </div>
-  )
+)
 }
 
 export default UserBox
