@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdOutlineGroupAdd} from 'react-icons/md'
+import ConversationBox from "./ConversationBox";
 
 const ConversationList = ({ initialItems }) => {
     const [items, setItems] = useState(initialItems);
@@ -22,6 +23,9 @@ const ConversationList = ({ initialItems }) => {
                         <MdOutlineGroupAdd size={20}/>
                     </div>
                 </div>
+                {items.map((item)=>(
+                    <ConversationBox key={item.id} data={item} selected={conversationsId === item.id}/>
+                ))}
             </div>
         </aside>
     )
