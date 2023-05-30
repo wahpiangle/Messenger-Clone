@@ -6,19 +6,18 @@ import { useSession } from "next-auth/react"
 import clsx from "clsx"
 import useOtherUser from "@/app/hooks/useOtherUser"
 import Avatar from "@/app/components/Avatar"
+
 //data is fetched using getConversations.js
 const ConversationBox = ({ data, selected }) => {
     const otherUser = useOtherUser(data)
     const session = useSession();
     const router = useRouter();
-
     const handleClick = useCallback(() => {
         router.push(`/conversations/${data.id}`)
     }, [data.id, router])
 
     const lastMessage = useMemo(()=>{
-        const messages = data.messasges || [];
-
+        const messages = data.messages || [];
         return messages[messages.length - 1]
     },[data.messages])
 
@@ -37,7 +36,7 @@ const ConversationBox = ({ data, selected }) => {
             return false;
         }
 
-        return seenArray.filter((user) => user.email === userEmailEmail).length !== 0
+        return seenArray.filter((user) => user.email === userEmail).length !== 0
 
     },[userEmail, lastMessage])
 
