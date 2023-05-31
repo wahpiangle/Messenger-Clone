@@ -9,6 +9,7 @@ export default withAuth({
 export const config = {
     //redirect to signIn page if user is not authenticated
     matcher: [
-        "/users/:path*"
+        "/users/:path*",
+        "/conversations/:path*"
     ]
 }

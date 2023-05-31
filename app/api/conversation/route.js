@@ -1,9 +1,8 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
-import prisma from '../../libs/prismadb'
+import prisma from "@/app/libs/prismadb";
 
 //request handler for creating conversation
-
 export async function POST(request) {
     try {
         const currentUser = await getCurrentUser();
