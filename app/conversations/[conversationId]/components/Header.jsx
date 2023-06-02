@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { HiChevronLeft, HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
-import { trusted } from "mongoose";
 
 const Header = ({ conversation }) =>{
     const [drawerOpen, setDrawerOpen] = useState(false);
