@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import Select from '@/app/components/inputs/Select';
+import Button from '@/app/components/Button';
 
 const GroupChatModal = ({isOpen, onClose, users}) => {
 
@@ -22,7 +23,7 @@ const GroupChatModal = ({isOpen, onClose, users}) => {
 
   const onSubmit = (data) => {
     setIsLoading(true);
-    axios.post('/api/conversations', {
+    axios.post('/api/conversation', {
       ...data,
       isGroup:true,
     })
@@ -63,6 +64,14 @@ const GroupChatModal = ({isOpen, onClose, users}) => {
               />
             </div>
           </div>
+        </div>
+        <div className='mt-6 flex items-center justify-end gap-x-6'>
+          <Button disabled={isLoading} onClick={onClose} type="button" secondary>
+            Cancel
+          </Button>
+          <Button disabled={isLoading} type="submit">
+            Create
+          </Button>
         </div>
       </form>
     </Modal>
