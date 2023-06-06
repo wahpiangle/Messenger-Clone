@@ -54,6 +54,9 @@ const ConversationList = ({ initialItems, users }) => {
                 return [...current.filter((convo) => convo.id !== conversation.id)]
                 //keep only the conversations that are not the one that was deleted (different id)
             })
+            if(conversationsId === conversation.id){
+                router.push('/conversations')
+            }
         }
 
         pusherClient.subscribe(pusherKey)
@@ -67,7 +70,7 @@ const ConversationList = ({ initialItems, users }) => {
             pusherClient.unbind('conversation:update', updateHandler)
             pusherClient.unbind('conversation:remove', removeHandler)
         }
-    },[pusherKey])
+    },[pusherKey, conversationId, router])
 
     return (
         <>
