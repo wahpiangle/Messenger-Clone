@@ -3,18 +3,72 @@
 import useConversation from "@/app/hooks/useConversation";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md'
 import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
+import { useSession } from "next-auth/react";
+import { pusherClient } from "@/app/libs/pusher";
+import { find } from "lodash";
 
 const ConversationList = ({ initialItems, users }) => {
+    const session = useSession();
 
     const [items, setItems] = useState(initialItems);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const router = useRouter();
     const { conversationsId, isOpen } = useConversation();
+
+    const pusherKey = useMemo(()=>{
+        return session.data?.user?.email
+    },[session.data?.user?.email])
+
+    useEffect(()=>{
+        if(!pusherKey) return;
+
+        //to handle when new conversation is created
+        const newHandler = (conversation)=>{
+            setItems((current) => {
+                if(find(current, { id: conversation.id})){
+                    return current; //don't do anything if conversation already exists
+                }
+                return [conversation, ...current]
+            })
+        }
+
+        const updateHandler = (conversation) =>{
+            setItems((current) => current.map((currentConversation) =>{
+                if(currentConversation.id === conversation.id){
+                    return {
+                    ...currentConversation,
+                    messages: conversation.messages
+                }}
+                return currentConversation
+            }))
+        }
+
+
+        const removeHandler = (conversation) =>{
+            setItems((current) => {
+                return [...current.filter((convo) => convo.id !== conversation.id)]
+                //keep only the conversations that are not the one that was deleted (different id)
+            })
+        }
+
+        pusherClient.subscribe(pusherKey)
+        pusherClient.bind('conversation:new', newHandler)
+        pusherClient.bind('conversation:update', updateHandler)
+        pusherClient.bind('conversation:remove', removeHandler)
+
+        return () =>{
+            pusherClient.unsubscribe(pusherKey)
+            pusherClient.unbind('conversation:new', newHandler)
+            pusherClient.unbind('conversation:update', updateHandler)
+            pusherClient.unbind('conversation:remove', removeHandler)
+        }
+    },[pusherKey])
+
     return (
         <>
             <GroupChatModal isOpen={isModalOpen} onClose={()=>setIsModalOpen(false)} users={users}/>
