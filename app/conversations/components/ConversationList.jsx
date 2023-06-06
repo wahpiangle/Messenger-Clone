@@ -70,7 +70,7 @@ const ConversationList = ({ initialItems, users }) => {
             pusherClient.unbind('conversation:update', updateHandler)
             pusherClient.unbind('conversation:remove', removeHandler)
         }
-    },[pusherKey, conversationId, router])
+    },[pusherKey, conversationsId, router])
 
     return (
         <>
