@@ -84,7 +84,6 @@ const AuthForm = () => {
     return (
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md mx-4">
             <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
-
                 {/* handleSubmit is written this way to allow useForm to catch it, and handleSubmit will pass data to onSubmit */}
                 <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     {variant === 'REGISTER' && (
